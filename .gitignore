@@ -27,3 +27,7 @@
 # Executables
 *.out
 *.app
+
+/database/mysql-8.0.19-winx64/*
+/database/mysql-8.0.19-winx64.zip
+*.pyc

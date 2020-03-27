@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>爱课在线</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <script src="{{ url_for('static', filename='jslib/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='jslib/jquery.cookie.js') }}"></script>
+        <script src="{{ url_for('static', filename='jslib/md5.js') }}"></script>
+    </head>
+
+    <body>
+        
+        <script type="text/javascript">
+            function on_submit() {
+                $('#password')[0].value = hex_md5($('#input_psw')[0].value);
+                $.cookie('user_name', $('#user_name')[0].value, {expires: 30, path: '/'});
+                $.cookie('password', $('#password')[0].value, {expires: 30, path: '/'});
+                return true;
+            }
+
+            function on_click_reg() {
+                window.location.href = './reg';
+            }
+
+        </script>
+        
+        <div style="padding: 70px 100px 10px;">
+            <form id='login_form' action="/login" method="POST" onsubmit="return on_submit()">
+                <div class="input-group" id="input_div_1">
+                    <span class="input-group-addon" id="input_name_1">账号(邮箱、手机)</span>
+                    {% if user_name %}
+                    <input type="text" name='user_name' id='user_name' class="form-control" style="width:200px;" value={{user_name}}>
+                    {% else %}
+                    <input type="text" class="form-control" style="width:200px;" name="user_name" id='user_name'>
+                    {% endif %}
+                </div>
+                <br>
+                <div class="input-group" id="input_div_2">
+                    <span class="input-group-addon" style="width:133px;" id="input_name_2">密码</span>
+                    {% if password %}
+                    <input type="password" class="form-control" style="width:200px;" id="input_psw" value={{password}}>
+                    {% else %}
+                    <input type="password" class="form-control" style="width:200px;" id="input_psw">
+                    {% endif %}
+                    <input type='hidden' id='password' name='password' value=''/>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="margin: 30px 0px; width: 100px">登录</button>
+                <button type="button" class="btn btn-primary btn-lg" style="margin: 30px 50px; width: 100px" onclick="on_click_reg()">注册</button>
+
+            </form>
+        </div>
+
+        {% if error %}
+            <script type="text/javascript"> alert('账号或密码错误'); </script>
+        {% else %}
+            
+        {% endif %}
+
+    </body>
+
+</html>

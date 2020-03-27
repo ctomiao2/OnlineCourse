@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>爱课在线</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <script src="{{ url_for('static', filename='jslib/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='jslib/jquery.cookie.js') }}"></script>
+        <script src="{{ url_for('static', filename='jslib/md5.js') }}"></script>
+    </head>
+
+    <body>
+        
+        <script type="text/javascript">
+
+            function check_user_name(is_submit=false) {
+                user_name = $('#user_name')[0].value;
+                if (user_name == "") {
+                    if (is_submit) {
+                        $('#user_name_err_hint')[0].innerText = '账号为空';
+                    }
+                    return false;
+                }
+                var reg=/^[a-z0-9A-Z@_.]{4,48}$/;
+                if (!reg.test(user_name)) {
+                    $('#user_name_err_hint')[0].innerText = '账号不合法，仅支持长度4~48位的数字/英文字母/@/_/.';
+                    return false;
+                }
+
+                $('#user_name_err_hint')[0].innerText = ''
+                return true;
+            }
+
+            function check_input_password() {
+                psw = $('#input_psw')[0].value;
+                if (psw == '') {
+                    $('#password_err_hint')[0].innerText = '密码为空';
+                    return false;
+                }
+                $('#password_err_hint')[0].innerText = ''
+                return true;
+            }
+
+            function check_confirm_password() {
+                psw = $('#input_psw')[0].value;
+                confirm_psw = $('#confirm_psw')[0].value;
+                if (psw != confirm_psw) {
+                    $('#password_confirm_err_hint')[0].innerText = '密码不一致';
+                    return false;
+                }
+                $('#password_confirm_err_hint')[0].innerText = ''
+                return true;
+            }
+
+            function check_password() {
+                return check_input_password() && check_confirm_password();
+            }
+
+            function on_submit() {
+                if (!check_user_name(true) || !check_password())
+                    return false;
+                $('#password')[0].value = hex_md5($('#input_psw')[0].value);
+                $.cookie('user_name', $('#user_name')[0].value, {expires: 30, path: '/'});
+                $.cookie('password', $('#password')[0].value, {expires: 30, path: '/'});
+                return true;
+            }
+
+            function on_click_login() {
+                window.location.href = './login';
+            }
+
+        </script>
+        
+        <div style="padding: 70px 100px 10px;">
+            <form id='login_form' action="/login" method="POST" onsubmit="return on_submit()">
+                <div class="input-group" id="input_div_1">
+                    <span class="input-group-addon" id="input_name_1">账号(邮箱、手机)</span>
+                    <input type="text" name='user_name' id='user_name' class="form-control" style="width:200px;" onblur="check_user_name()">
+                </div>
+                <div class="input-group">
+                    <span id='user_name_err_hint' style='color:#ff0000; display:block; margin:-20px 350px'></span>
+                </div>
+                <br>
+                <div class="input-group" id="input_div_2">
+                    <span class="input-group-addon" style="width:133px;" id="input_name_2">密码</span>
+                    <input type="password" class="form-control" style="width:200px;" id="input_psw" onblur="check_input_password()">
+                </div>
+                <div class="input-group">
+                    <span id='password_err_hint' style='color:#ff0000; display:block; margin:-20px 350px'></span>
+                </div>
+                <br>
+                <div class="input-group" id="input_div_3">
+                    <span class="input-group-addon" style="width:133px;" id="input_name_2">确认密码</span>
+                    <input type="password" class="form-control" style="width:200px;" id="confirm_psw" onblur="check_confirm_password()">
+                    <input type='hidden' id='password' name='password' value=''/>
+                </div>
+                <div class="input-group">
+                    <span id='password_confirm_err_hint' style='color:#ff0000; display:block; margin:-20px 350px'></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg" style="margin: 30px 0px; width: 100px">注册</button>
+                <button type="button" class="btn btn-primary btn-lg" style="margin: 30px 50px; width: 100px" onclick="on_click_reg()">返回登录</button>
+            </form>
+
+        </div>
+    </body>
+
+</html>
